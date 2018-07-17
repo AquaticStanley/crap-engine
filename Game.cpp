@@ -1,6 +1,4 @@
 #include "Game.h"
-#include "SFML/System.hpp"
-#include <chrono>
 
 void GameLoop()
 {
@@ -13,5 +11,21 @@ void GameLoop()
 	sf::RenderWindow window(sf::VideoMode(1200, 600), "GameWindow", sf::Style::Close);
 	window.setVerticalSyncEnabled(true);
 
-	//Variables for dealing with time and delta time
+	// Variables for dealing with time and delta time
+	Stopwatch<std::chrono::milliseconds> deltaClock;
+	double lag = 0.0;
+	double lagLeftOver = 1.0;
+
+	// Variables for tracking framerate
+	Stopwatch<std::chrono::milliseconds> framerateClock;
+	framerateClock.start();
+	int frameCount = 0;
+
+	// Object for graphics manipulation
+	sf::RenderWindow* windowPtr = &window;
+	Graphics* graphics = new Graphics(windowPtr);
+
+	// Create test level
+	std::vector<GameObject> gameObjects;
+	
 }
