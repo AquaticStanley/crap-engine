@@ -6,10 +6,13 @@
 // #include "MathFunctions.h"
 
 // World Constants
+// Units/second
 const float WORLD_X_SPEED_LIMIT = 2.5;
 
+// Units/second
 const float WORLD_Y_SPEED_LIMIT = 10;
 
+// Units/second^2
 const float WORLD_GRAVITY_ACCELERATION = -0.5;
 
 class World
