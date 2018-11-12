@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ComponentDependency.h"
+#include <algorithm>
 
 class PlayerSpriteSheet : public SpriteSheet
 {
@@ -10,6 +11,7 @@ private:
 public:
 	std::string operator [](std::string spriteName);
 };
+
 
 class PlayerPhysicsComponent : public PhysicsComponent
 {
@@ -21,23 +23,46 @@ public:
 	PlayerPhysicsComponent() : isOnGround(false) {}
 };
 
+
 class PlayerInputComponent : public InputComponent
 {
 private:
 	// Player specific physics properties
-	const float WALK_ACCELERATION_GROUND = 0.5;
-    const float WALK_ACCELERATION_AIR = 0.25;
-    const float IDLE_X_ACCELERATION_GROUND = 0.25;
-    const float IDLE_X_ACCELERATION_AIR = 0.1;
-    const float JUMP_VELOCITY = 2;
+	const double WALK_ACCELERATION_GROUND = 0.5;
+  const double WALK_ACCELERATION_AIR = 0.25;
+  const double IDLE_X_ACCELERATION_GROUND = 0.25;
+  const double IDLE_X_ACCELERATION_AIR = 0.1;
+  const double JUMP_VELOCITY = 2.0;
 
-    PlayerPhysicsComponent* m_physics;
+  // Key bindings
+  sf::Keyboard::Key key_right;
+  sf::Keyboard::Key key_left;
+  sf::Keyboard::Key key_up;
+  sf::Keyboard::Key key_down;
+  sf::Keyboard::Key key_space;
+  sf::Keyboard::Key key_ab1;
+  sf::Keyboard::Key key_ab2;
+  sf::Keyboard::Key key_ab3;
+  sf::Keyboard::Key key_ab4;
+
+  PlayerPhysicsComponent* m_physics;
 
 public:
-	PlayerInputComponent(PlayerPhysicsComponent* physics) : m_physics(physics) {}
+	PlayerInputComponent(PlayerPhysicsComponent* physics) : 
+  key_right(sf::Keyboard::Key::Right), 
+  key_left(sf::Keyboard::Key::Left), 
+  key_up(sf::Keyboard::Key::Up), 
+  key_down(sf::Keyboard::Key::Down), 
+  key_space(sf::Keyboard::Key::Space),
+  key_ab1(sf::Keyboard::Key::Z),
+  key_ab2(sf::Keyboard::Key::X),
+  key_ab3(sf::Keyboard::Key::C),
+  key_ab4(sf::Keyboard::Key::V),
+  m_physics(physics) {}
 
 	virtual void update(GameObject& object);
 };
+
 
 class PlayerGraphicsComponent : public GraphicsComponent
 {
