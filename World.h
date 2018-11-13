@@ -30,4 +30,6 @@ public:
 	World(std::vector<GameObject> entitiesInLevel);
 
 	std::vector<GameObject> entities;
+
+  void addEntities(std::vector<GameObject> entitiesToAdd);
 };

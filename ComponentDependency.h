@@ -5,6 +5,7 @@
 #pragma once
 #include "GraphicsComponent.h"
 #include "InputComponent.h"
+#include "DataComponent.h"
 #include "GameObject.h"
 #include "World.h"
 #include "EntityTypes.h"

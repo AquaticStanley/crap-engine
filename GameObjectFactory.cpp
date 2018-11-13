@@ -2,6 +2,7 @@
 
 GameObject* GameObjectFactory::createPlayer(sf::Vector2f position)
 {
-    PlayerPhysicsComponent* physics = new PlayerPhysicsComponent;
-    return new GameObject(new PlayerInputComponent(physics), physics, new PlayerGraphicsComponent(physics), position, sf::Vector2f(PLAYER_WIDTH, PLAYER_HEIGHT), EntityType::Player);
+    PlayerDataComponent* data = new PlayerDataComponent(position, sf::Vector2f(PLAYER_WIDTH, PLAYER_HEIGHT), EntityType::Player);
+    PlayerPhysicsComponent* physics = new PlayerPhysicsComponent(data);
+    return new GameObject(new PlayerInputComponent(data), physics, new PlayerGraphicsComponent(data), data);
 }
