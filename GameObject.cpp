@@ -2,7 +2,7 @@
 
 void GameObject::updateInput()
 {
-  m_input->update(*this);
+  m_input->update();
 }
 
 void GameObject::updatePhysics(World& world)

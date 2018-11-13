@@ -9,8 +9,8 @@ void GameLoop()
 
 	// SFML Window Initialization
 	sf::RenderWindow window(sf::VideoMode(1200, 600), "GameWindow", sf::Style::Close);
-	window.setVerticalSyncEnabled(true);
-  // window.setFramerateLimit(144);
+	// window.setVerticalSyncEnabled(true);
+  window.setFramerateLimit(60);
 
 	// Variables for dealing with time and delta time
 	Stopwatch<std::chrono::milliseconds> deltaClock;
@@ -37,7 +37,7 @@ void GameLoop()
   // sf::CircleShape shape(100.f);
   // shape.setFillColor(sf::Color::Green);
   // sf::Vector2f position(10.f, 50.f);
-  double velocity = 0.0;
+  // double velocity = 0.0;
   while(window.isOpen())
   {
     sf::Event event;

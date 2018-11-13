@@ -5,5 +5,5 @@ class GameObject;
 class InputComponent
 {
 public:
-	virtual void update(GameObject& object) = 0;
+	virtual void update() = 0;
 };
