@@ -8,7 +8,7 @@ void GameLoop()
 	int MS_PER_UPDATE = 10;
 
 	// SFML Window Initialization
-	sf::RenderWindow window(sf::VideoMode(1200, 600), "GameWindow", sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(1800, 1200), "GameWindow", sf::Style::Close);
 	// window.setVerticalSyncEnabled(true);
   window.setFramerateLimit(60);
 
@@ -36,7 +36,7 @@ void GameLoop()
   spawnClock.start();
 
   // Create view for zoom and camera
-  float zoomMultiplier = 1.5;
+  float zoomMultiplier = 2.0;
   sf::View view = window.getDefaultView();
   view.zoom(1 / zoomMultiplier);
   window.setView(view);

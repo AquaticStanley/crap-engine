@@ -7,7 +7,7 @@ class BulletDataComponent : public DataComponent
 {
 public:
   int activeFrames;
-  BulletDataComponent(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f hitbox) : DataComponent(position, velocity, hitbox, EntityType::Projectile, false), activeFrames(100) {}
+  BulletDataComponent(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f hitbox) : DataComponent(position, velocity, hitbox, EntityType::PlayerProjectile, false), activeFrames(100) {}
 };
 
 class BulletPhysicsComponent : public PhysicsComponent

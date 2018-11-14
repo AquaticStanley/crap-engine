@@ -52,7 +52,7 @@ void World::resolveCollision(DataComponent* data)
   for(unsigned int i = 0; i < entities.size(); i++)
   {
     // Check to make sure entity being examined is not same entity being passed in
-    if(entities[i].m_data->m_id != data->m_id)
+    if(entities[i].m_data->m_id != data->m_id && !canPassThrough(data->m_type, entities[i].m_data->m_type))
     {
       bool sameXLevel = valueInRange(entities[i].m_data->m_position.x, data->m_position.x, data->m_position.x + data->m_hitbox.x + 1) ||
         valueInRange(data->m_position.x, entities[i].m_data->m_position.x, entities[i].m_data->m_position.x + entities[i].m_data->m_hitbox.x + 1);
@@ -168,4 +168,14 @@ World::World(std::vector<GameObject> entitiesInLevel)
 void World::addEntities(std::vector<GameObject> entitiesToAdd)
 {
   entities.insert(entities.end(), entitiesToAdd.begin(), entitiesToAdd.end());
+}
+
+bool World::canPassThrough(const EntityType::Type type1, const EntityType::Type type2)
+{
+  if((type1 == EntityType::Player && type2 == EntityType::PlayerProjectile) || (type1 == EntityType::PlayerProjectile && type2 == EntityType::Player))
+  {
+    return true;
+  }
+
+  return false;
 }

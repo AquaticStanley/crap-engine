@@ -22,11 +22,11 @@ std::vector<GameObject> PlayerDataComponent::bullet(World& world)
   position.y += (m_hitbox.y / 2.0);
   if(facingRight)
   {
-    position.x += 1.0;
+    position.x += 0.0 + m_hitbox.x;
   }
   else
   {
-    position.x -= 1.0;
+    position.x -= 0.0;
   }
   sf::Vector2f velocity(PLAYER_BULLET_VELOCITY, 0.0);
 
@@ -150,6 +150,8 @@ void PlayerPhysicsComponent::update(World& world)
   if(m_data->ab1Activated && !m_data->abilityIP)
   {
     world.addEntities(m_data->bullet(world));
+    m_data->abilityIP = true;
+    m_data->ab1Activated = false;
   }
 
   if(m_data->jumping && m_data->m_isOnGround)
@@ -253,7 +255,7 @@ void PlayerInputComponent::update()
 
 
   // Set these to false conditionally
-  if(!m_data->anyAbilitiesInProgress() && !m_data->anyAbilitiesActivated())
+  if(!m_data->anyAbilitiesInProgress())
   {
     if(sf::Keyboard::isKeyPressed(key_ab1))
     {
@@ -275,6 +277,11 @@ void PlayerInputComponent::update()
   else
   {
     m_data->clearAbilityActivatedFlags();
+    if(!sf::Keyboard::isKeyPressed(key_ab1))
+    {
+      m_data->abilityIP = false;
+    }
+    // m_data->abilityIP = false;
   }
   
 	return;

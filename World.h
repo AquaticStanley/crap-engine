@@ -36,4 +36,7 @@ public:
   World(std::vector<GameObject> entitiesInLevel);
 
   void addEntities(std::vector<GameObject> entitiesToAdd);
+
+  bool canPassThrough(const EntityType::Type type1, const EntityType::Type type2);
+
 };

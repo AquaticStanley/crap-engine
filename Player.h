@@ -6,7 +6,7 @@
 #include <cmath>
 #include <functional>
 
-const int PLAYER_BULLET_VELOCITY = 30.0;
+const int PLAYER_BULLET_VELOCITY = 7.0;
 const int PLAYER_BULLET_WIDTH = 6.0;
 const int PLAYER_BULLET_HEIGHT = 3.0;
 
