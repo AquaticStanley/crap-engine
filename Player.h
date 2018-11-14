@@ -13,7 +13,7 @@ const int PLAYER_BULLET_HEIGHT = 3.0;
 const double SHOTGUN_CONE_WIDTH = 3.0;
 const int NUM_SHOTGUN_PELLETS = 6;
 
-const double BLINK_DISTANCE = 70.0;
+const double BLINK_DISTANCE = 50.0;
 
 class PlayerSpriteSheet : public SpriteSheet
 {
@@ -49,7 +49,7 @@ public:
 
   bool abilityIP;
   bool jumpIP;
-  sf::Vector2f positionMod;
+  // sf::Vector2f positionMod;
   // bool walkingUp;
   // bool walkingDown;
 
@@ -95,8 +95,8 @@ public:
    ab2Activated(false),
    ab3Activated(false),
    ab4Activated(false),
-   abilityIP(false),
-   positionMod(0.0, 0.0)
+   abilityIP(false)
+   // positionMod(0.0, 0.0)
    {
      abilities.resize(4);
 
