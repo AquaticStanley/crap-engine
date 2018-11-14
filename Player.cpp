@@ -11,23 +11,13 @@ std::string PlayerSpriteSheet::operator[](std::string spriteName)
 
 std::vector<GameObject> PlayerDataComponent::bullet(World& world)
 {
-  // Later on use world to check where to spawn bullet
-  (void)world;
-
   std::vector<GameObject> gameObjects;
   GameObjectFactory gof;
 
   // Get starting position
-  sf::Vector2f position(m_position);
-  position.y += (m_hitbox.y / 2.0);
-  if(facingRight)
-  {
-    position.x += 0.0 + m_hitbox.x;
-  }
-  else
-  {
-    position.x -= 0.0;
-  }
+  sf::Vector2f position = getProjectileStartingPos(world);
+
+  // Get velocity
   sf::Vector2f velocity(PLAYER_BULLET_VELOCITY, 0.0);
 
   if(!facingRight)
@@ -38,6 +28,37 @@ std::vector<GameObject> PlayerDataComponent::bullet(World& world)
   sf::Vector2f hitbox(PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT);
   GameObject* object = gof.createBullet(position, velocity, hitbox);
   gameObjects.push_back(*object);
+
+  return gameObjects;
+}
+
+std::vector<GameObject> PlayerDataComponent::shotgun(World& world)
+{
+  (void)world;
+  std::vector<GameObject> gameObjects;
+  GameObjectFactory gof;
+
+  // Get starting position
+  sf::Vector2f position = getProjectileStartingPos(world);
+
+  // Get velocity for multiple bullets
+  double currentVelocityX = PLAYER_BULLET_VELOCITY;
+
+  if(!facingRight)
+  {
+    currentVelocityX *= -1;
+  }
+  double currentVelocityY = (0.0 - (SHOTGUN_CONE_WIDTH / 2));
+  double distanceBetweenEachPellet = SHOTGUN_CONE_WIDTH / NUM_SHOTGUN_PELLETS;
+
+  sf::Vector2f hitbox(PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT);
+
+  for(int i = 0; i < NUM_SHOTGUN_PELLETS; i++)
+  {
+    currentVelocityY += distanceBetweenEachPellet;
+    GameObject* object = gof.createBullet(position, sf::Vector2f(currentVelocityX, currentVelocityY), hitbox);
+    gameObjects.push_back(*object);
+  }
 
   return gameObjects;
 }
@@ -103,6 +124,23 @@ void PlayerDataComponent::clearAbilityActivatedFlags()
   ab4Activated = false;
 }
 
+sf::Vector2f PlayerDataComponent::getProjectileStartingPos(World& world)
+{
+  // Later on use world to check where to spawn bullet
+  (void)world;
+
+  // Get starting position
+  sf::Vector2f position(m_position);
+  position.y += (m_hitbox.y / 2.0);
+  if(facingRight)
+  {
+    position.x += m_hitbox.x;
+  }
+
+  return position;
+}
+
+
 void PlayerPhysicsComponent::update(World& world)
 {
   if(m_data->walkingRight)
@@ -149,9 +187,16 @@ void PlayerPhysicsComponent::update(World& world)
 
   if(m_data->ab1Activated && !m_data->abilityIP)
   {
-    world.addEntities(m_data->bullet(world));
+    world.addEntities(m_data->abilities[0](world));
     m_data->abilityIP = true;
     m_data->ab1Activated = false;
+  }
+
+  if(m_data->ab2Activated && !m_data->abilityIP)
+  {
+    world.addEntities(m_data->abilities[1](world));
+    m_data->abilityIP = true;
+    m_data->ab2Activated = false;
   }
 
   if(m_data->jumping && !m_data->jumpIP && m_data->m_isOnGround)
@@ -286,11 +331,10 @@ void PlayerInputComponent::update()
   else
   {
     m_data->clearAbilityActivatedFlags();
-    if(!sf::Keyboard::isKeyPressed(key_ab1))
+    if(!sf::Keyboard::isKeyPressed(key_ab1) && !sf::Keyboard::isKeyPressed(key_ab2))
     {
       m_data->abilityIP = false;
     }
-    // m_data->abilityIP = false;
   }
   
 	return;

@@ -10,6 +10,9 @@ const int PLAYER_BULLET_VELOCITY = 7.0;
 const int PLAYER_BULLET_WIDTH = 6.0;
 const int PLAYER_BULLET_HEIGHT = 3.0;
 
+const double SHOTGUN_CONE_WIDTH = 3.0;
+const int NUM_SHOTGUN_PELLETS = 6;
+
 class PlayerSpriteSheet : public SpriteSheet
 {
 private:
@@ -52,6 +55,8 @@ public:
   // passives?
   std::vector<GameObject> bullet(World& world);
 
+  std::vector<GameObject> shotgun(World& world);
+
   // Generic functions
 
   bool isIdle();
@@ -72,6 +77,8 @@ public:
 
   void clearAbilityActivatedFlags();
 
+  sf::Vector2f getProjectileStartingPos(World& world);
+
   PlayerDataComponent(sf::Vector2f position, sf::Vector2f hitbox, EntityType::Type type, bool isOnGround) : 
   DataComponent(position, sf::Vector2f(0.0, 0.0), hitbox, type, isOnGround),
    m_hp(100),
@@ -79,7 +86,18 @@ public:
    ab2Activated(false),
    ab3Activated(false),
    ab4Activated(false),
-   abilityIP(false) {}
+   abilityIP(false) 
+   {
+     abilities.resize(4);
+     // abilities[0] = std::bind(&PlayerDataComponent::bullet, this, World&);
+     abilities[0] = [&] (World& world) {
+      return this->bullet(world);
+     };
+
+     abilities[1] = [&] (World& world) {
+      return this->shotgun(world);
+     };
+   }
 };
 
 
