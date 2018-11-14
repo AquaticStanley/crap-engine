@@ -42,6 +42,7 @@ public:
   bool ab4Activated;
 
   bool abilityIP;
+  bool jumpIP;
   // bool walkingUp;
   // bool walkingDown;
 

@@ -154,10 +154,12 @@ void PlayerPhysicsComponent::update(World& world)
     m_data->ab1Activated = false;
   }
 
-  if(m_data->jumping && m_data->m_isOnGround)
+  if(m_data->jumping && !m_data->jumpIP && m_data->m_isOnGround)
   {
     m_data->m_velocity.y += JUMP_VELOCITY;
     m_data->m_isOnGround = false;
+    m_data->jumpIP = true;
+    m_data->jumping = false;
   }
 
   if(m_data->m_hp <= 0)
@@ -241,16 +243,23 @@ void PlayerInputComponent::update()
     m_data->clearLeftRight();
   }
 
-  if(sf::Keyboard::isKeyPressed(key_space))
+  if(!m_data->jumpIP)
   {
-    if(m_data->m_isOnGround)
+    if(sf::Keyboard::isKeyPressed(key_space))
     {
-      m_data->jumping = true;
+      if(m_data->m_isOnGround)
+      {
+        m_data->jumping = true;
+      }
     }
   }
   else
   {
     m_data->jumping = false;
+    if(!sf::Keyboard::isKeyPressed(key_space))
+    {
+      m_data->jumpIP = false;
+    }
   }
 
 
