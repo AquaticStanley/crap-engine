@@ -11,7 +11,7 @@ const int PLAYER_BULLET_WIDTH = 6.0;
 const int PLAYER_BULLET_HEIGHT = 3.0;
 
 const double SHOTGUN_CONE_WIDTH = 3.0;
-const int NUM_SHOTGUN_PELLETS = 6;
+const int NUM_SHOTGUN_PELLETS = 7;
 
 class PlayerSpriteSheet : public SpriteSheet
 {
