@@ -101,7 +101,7 @@ void GameLoop()
 
     if(spawned)
     {
-      view.setCenter(sf::Vector2f(world.entities[0].m_data->m_position.x * 2, view.getSize().y * zoomMultiplier) - world.entities[0].m_data->m_position);
+      view.setCenter(sf::Vector2f(world.entities[0].m_data->m_position.x * 2.0, view.getSize().y * zoomMultiplier) - world.entities[0].m_data->m_position);
     }
     window.setView(view);
     window.display();

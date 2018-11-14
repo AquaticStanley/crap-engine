@@ -37,12 +37,6 @@ void World::render(double frameProgress, Graphics& graphics)
   }
 }
 
-// void World::resolveCollision(const sf::Vector2f& hitbox, sf::Vector2f& position, sf::Vector2f
-//       & velocity, const EntityType::Type type, bool& isOnGround)
-// {
-
-// }
-
 void World::resolveCollision(DataComponent* data)
 {
   sf::Vector2f previousPosition = data->m_position - data->m_velocity;
@@ -175,6 +169,29 @@ bool World::canPassThrough(const EntityType::Type type1, const EntityType::Type 
   if((type1 == EntityType::Player && type2 == EntityType::PlayerProjectile) || (type1 == EntityType::PlayerProjectile && type2 == EntityType::Player))
   {
     return true;
+  }
+
+  return false;
+}
+
+bool World::isOccupied(DataComponent* data)
+{
+  for(unsigned int i = 0; i < entities.size(); i++)
+  {
+    // Is not supposed to pass through
+    if(entities[i].m_data->m_id != data->m_id && !canPassThrough(data->m_type, entities[i].m_data->m_type))
+    {
+      bool sameXLevel = valueInRange(entities[i].m_data->m_position.x, data->m_position.x, data->m_position.x + data->m_hitbox.x + 1) ||
+        valueInRange(data->m_position.x, entities[i].m_data->m_position.x, entities[i].m_data->m_position.x + entities[i].m_data->m_hitbox.x + 1);
+
+      bool sameYLevel = valueInRange(entities[i].m_data->m_position.y, data->m_position.y, data->m_position.y + data->m_hitbox.y + 1) ||
+        valueInRange(data->m_position.y, entities[i].m_data->m_position.y, entities[i].m_data->m_position.y + entities[i].m_data->m_hitbox.y + 1);
+
+      if(sameXLevel && sameYLevel)
+      {
+        return true;
+      }
+    }
   }
 
   return false;

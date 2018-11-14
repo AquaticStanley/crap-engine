@@ -1,0 +1,1 @@
+condense same x level and same y level into function taking two gameobjects

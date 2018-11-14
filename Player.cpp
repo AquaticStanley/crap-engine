@@ -63,6 +63,39 @@ std::vector<GameObject> PlayerDataComponent::shotgun(World& world)
   return gameObjects;
 }
 
+std::vector<GameObject> PlayerDataComponent::blink(World& world)
+{
+  std::cout << "Blink called" << std::endl;
+  std::vector<GameObject> gameObjects;
+
+  // Get ending position
+  sf::Vector2f blinkVector(BLINK_DISTANCE, 1.0);
+
+  if(!facingRight)
+  {
+    blinkVector.x *= -1.0;
+  }
+
+  sf::Vector2f oldPosition = m_position;
+  m_position += blinkVector;
+
+  // Check if position is occupied
+  if(world.isOccupied(this))
+  {
+    m_position = oldPosition;
+  }
+
+
+  return gameObjects;
+}
+
+// std::vector<GameObject> PlayerDataComponent::hookshot(World& world)
+// {
+//   (void)world;
+//   std::vector<GameObject> gameObjects;
+//   GameObjectFactory gof;
+// }
+
 
 bool PlayerDataComponent::isIdle()
 {
@@ -76,7 +109,6 @@ bool PlayerDataComponent::anyAbilitiesActivated()
 
 bool PlayerDataComponent::anyAbilitiesInProgress()
 {
-  // return (ab1IP || ab2IP || ab3IP || ab4IP);
   return abilityIP;
 }
 
@@ -199,6 +231,13 @@ void PlayerPhysicsComponent::update(World& world)
     m_data->ab2Activated = false;
   }
 
+  if(m_data->ab3Activated && !m_data->abilityIP)
+  {
+    world.addEntities(m_data->abilities[2](world));
+    m_data->abilityIP = true;
+    m_data->ab3Activated = false;
+  }
+
   if(m_data->jumping && !m_data->jumpIP && m_data->m_isOnGround)
   {
     m_data->m_velocity.y += JUMP_VELOCITY;
@@ -247,8 +286,10 @@ void PlayerPhysicsComponent::update(World& world)
     }
   }
 
-  // Set player's position due to velocity
+  // Set player's position due to velocity and other modifiers
   m_data->m_position += m_data->m_velocity;
+
+  // m_data->positionMod = sf::Vector2f(0.0, 0.0);
 
   // Resolve world collisions
   world.resolveCollision(m_data);
@@ -261,31 +302,34 @@ void PlayerInputComponent::update()
   // This function is to determine which functions the player will
   // actually accomplish when the time comes to update physics
 
-  if(sf::Keyboard::isKeyPressed(key_right))
+  if(m_data->canMove)
   {
-    if(m_data->m_isOnGround)
+    if(sf::Keyboard::isKeyPressed(key_right))
     {
-      m_data->setWalkingRight();
+      if(m_data->m_isOnGround)
+      {
+        m_data->setWalkingRight();
+      }
+      else
+      {
+        m_data->setFloatingRight();
+      }
     }
-    else
+    else if(sf::Keyboard::isKeyPressed(key_left))
     {
-      m_data->setFloatingRight();
+      if(m_data->m_isOnGround)
+      {
+        m_data->setWalkingLeft();
+      }
+      else
+      {
+        m_data->setFloatingLeft();
+      }
     }
-  }
-  else if(sf::Keyboard::isKeyPressed(key_left))
-  {
-    if(m_data->m_isOnGround)
+    else // Neither right or left are held
     {
-      m_data->setWalkingLeft();
+      m_data->clearLeftRight();
     }
-    else
-    {
-      m_data->setFloatingLeft();
-    }
-  }
-  else // Neither right or left are held
-  {
-    m_data->clearLeftRight();
   }
 
   if(!m_data->jumpIP)
@@ -331,7 +375,7 @@ void PlayerInputComponent::update()
   else
   {
     m_data->clearAbilityActivatedFlags();
-    if(!sf::Keyboard::isKeyPressed(key_ab1) && !sf::Keyboard::isKeyPressed(key_ab2))
+    if(!sf::Keyboard::isKeyPressed(key_ab1) && !sf::Keyboard::isKeyPressed(key_ab2) && !sf::Keyboard::isKeyPressed(key_ab3))
     {
       m_data->abilityIP = false;
     }
@@ -345,6 +389,7 @@ void PlayerGraphicsComponent::update(Graphics& graphics, double frameProgress)
   // sf::Vector2f predictedPosition = object.position_ + sf::Vector2f(object.velocity_.x * frameProgress, object.velocity_.y * frameProgress);
 
   sf::Vector2f predictedPosition = m_data->m_position + sf::Vector2f(m_data->m_velocity.x * frameProgress, m_data->m_velocity.y * frameProgress);
+   // + sf::Vector2f(m_data->positionMod.x, m_data->positionMod.y);
 	
   graphics.draw(predictedPosition, m_data->m_hitbox, STANDING_SPRITE);
 

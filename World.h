@@ -39,4 +39,5 @@ public:
 
   bool canPassThrough(const EntityType::Type type1, const EntityType::Type type2);
 
+  bool isOccupied(DataComponent* data);
 };
