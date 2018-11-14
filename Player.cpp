@@ -56,7 +56,7 @@ std::vector<GameObject> PlayerDataComponent::shotgun(World& world)
   for(int i = 0; i < NUM_SHOTGUN_PELLETS; i++)
   {
     currentVelocityY += distanceBetweenEachPellet;
-    GameObject* object = gof.createBullet(position, sf::Vector2f(currentVelocityX, currentVelocityY), hitbox);
+    GameObject* object = gof.createPellet(position, sf::Vector2f(currentVelocityX, currentVelocityY), hitbox);
     gameObjects.push_back(*object);
   }
 

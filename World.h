@@ -11,7 +11,7 @@
 const float WORLD_X_SPEED_LIMIT = 3.0;
 
 // Units/second
-const float WORLD_Y_SPEED_LIMIT = 10.0;
+const float WORLD_Y_SPEED_LIMIT = 7.0;
 
 // Units/second^2
 const float WORLD_GRAVITY_ACCELERATION = -0.05;

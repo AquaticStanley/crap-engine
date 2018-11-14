@@ -17,3 +17,9 @@ GameObject* GameObjectFactory::createBullet(sf::Vector2f position, sf::Vector2f 
   BulletDataComponent* data = new BulletDataComponent(position, velocity, hitbox);
   return new GameObject(new BulletInputComponent(), new BulletPhysicsComponent(data), new BulletGraphicsComponent(data), data);
 }
+
+GameObject* GameObjectFactory::createPellet(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f hitbox)
+{
+  BulletDataComponent* data = new BulletDataComponent(position, velocity, hitbox);
+  return new GameObject(new BulletInputComponent(), new BulletPhysicsComponent(data), new PelletGraphicsComponent(data), data);
+}
