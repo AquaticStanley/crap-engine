@@ -19,16 +19,12 @@ private:
 
 public:
   DataComponent* m_data;
-	bool m_toBeRemoved;
 
 	GameObject(InputComponent* input,
 		PhysicsComponent* physics,
 		GraphicsComponent* graphics,
     DataComponent* data)
-		: m_input(input), m_physics(physics), m_graphics(graphics), m_data(data)
-		{
-			m_toBeRemoved = false;
-		}
+		: m_input(input), m_physics(physics), m_graphics(graphics), m_data(data) {}
 
 	void updateInput();
 

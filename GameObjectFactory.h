@@ -4,6 +4,8 @@
 
 // Entity Dependencies
 #include "Player.h"
+#include "Platform.h"
+#include "Bullet.h"
 
 //Big list of constants for dimensions and characteristics
 const int PLAYER_HEIGHT = 30;
@@ -16,4 +18,6 @@ public:
 	GameObject* createPlayer(sf::Vector2f position);
 
 	GameObject* createPlatform(sf::Vector2f position, sf::Vector2f hitbox);
+
+  GameObject* createBullet(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f hitbox);
 };

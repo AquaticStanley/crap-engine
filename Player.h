@@ -4,6 +4,11 @@
 #include <algorithm>
 #include <vector>
 #include <cmath>
+#include <functional>
+
+const int PLAYER_BULLET_VELOCITY = 30.0;
+const int PLAYER_BULLET_WIDTH = 6.0;
+const int PLAYER_BULLET_HEIGHT = 3.0;
 
 class PlayerSpriteSheet : public SpriteSheet
 {
@@ -24,21 +29,35 @@ public:
   int m_hp;
 
   // Flags for what buttons are held
+  bool facingRight;
   bool walkingRight;
   bool walkingLeft;
   bool jumping;
   bool floatingRight;
   bool floatingLeft;
-  bool usingAb1;
-  bool usingAb2;
-  bool usingAb3;
-  bool usingAb4;
+
+  bool ab1Activated;
+  bool ab2Activated;
+  bool ab3Activated;
+  bool ab4Activated;
+
+  bool abilityIP;
   // bool walkingUp;
   // bool walkingDown;
 
+  std::vector<std::function<std::vector<GameObject>(World&)>> abilities;
+
+  // Ability functions
+  // passives?
+  std::vector<GameObject> bullet(World& world);
+
+  // Generic functions
+
   bool isIdle();
 
-  bool usingAbility();
+  bool anyAbilitiesActivated();
+
+  bool anyAbilitiesInProgress();
 
   void setWalkingRight();
 
@@ -50,7 +69,16 @@ public:
 
   void clearLeftRight();
 
-  PlayerDataComponent(sf::Vector2f position, sf::Vector2f hitbox, EntityType::Type type, bool isOnGround) : DataComponent(position, sf::Vector2f(0.0, 0.0), hitbox, type, isOnGround), m_hp(100) {}
+  void clearAbilityActivatedFlags();
+
+  PlayerDataComponent(sf::Vector2f position, sf::Vector2f hitbox, EntityType::Type type, bool isOnGround) : 
+  DataComponent(position, sf::Vector2f(0.0, 0.0), hitbox, type, isOnGround),
+   m_hp(100),
+   ab1Activated(false),
+   ab2Activated(false),
+   ab3Activated(false),
+   ab4Activated(false),
+   abilityIP(false) {}
 };
 
 
@@ -64,14 +92,14 @@ private:
   PlayerDataComponent* m_data;
 
   // Player specific physics properties
-  const double WALK_ACCELERATION_GROUND = 0.01;
-  const double WALK_ACCELERATION_AIR = 0.25;
+  const double WALK_ACCELERATION_GROUND = 0.30;
+  const double WALK_ACCELERATION_AIR = 0.30;
   const double IDLE_X_ACCELERATION_GROUND = 0.25;
-  const double IDLE_X_ACCELERATION_AIR = 0.1;
-  const double JUMP_VELOCITY = 2.0;
+  const double IDLE_X_ACCELERATION_AIR = 0.5;
+  const double JUMP_VELOCITY = 3.0;
 
 public:
-  virtual void update(GameObject& object, World& world);
+  virtual void update(World& world);
 
   PlayerPhysicsComponent(PlayerDataComponent* data) : m_data(data) {}
 };
@@ -133,7 +161,7 @@ private:
 public:
   PlayerGraphicsComponent(PlayerDataComponent* data) : m_data(data)
   {
-    bool loaded = STANDING_TEXTURE.loadFromFile("grillStandingSprite.png");
+    STANDING_TEXTURE.loadFromFile("grillStandingSprite.png");
     STANDING_SPRITE.setTexture(STANDING_TEXTURE);
     STANDING_SPRITE.setTextureRect(sf::IntRect(0, 0, 15, 30));
   }

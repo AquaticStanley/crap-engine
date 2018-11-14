@@ -17,6 +17,6 @@ public:
 
   void translatePosition(sf::Vector2f& position, sf::RenderWindow * window);
 
-  void translatePosition(sf::Vector2f & position, sf::View * view);
+  // void translatePosition(sf::Vector2f & position, sf::View * view);
 
 };

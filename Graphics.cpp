@@ -39,7 +39,7 @@ void Graphics::translatePosition(sf::Vector2f& position, sf::RenderWindow * wind
   return;
 }
 
-void Graphics::translatePosition(sf::Vector2f & position, sf::View * view)
-{
+// void Graphics::translatePosition(sf::Vector2f & position, sf::View * view)
+// {
 
-}
+// }

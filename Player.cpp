@@ -9,38 +9,82 @@ std::string PlayerSpriteSheet::operator[](std::string spriteName)
 	return s_spriteMap[spriteName];
 }
 
+std::vector<GameObject> PlayerDataComponent::bullet(World& world)
+{
+  // Later on use world to check where to spawn bullet
+  (void)world;
+
+  std::vector<GameObject> gameObjects;
+  GameObjectFactory gof;
+
+  // Get starting position
+  sf::Vector2f position(m_position);
+  position.y += (m_hitbox.y / 2.0);
+  if(facingRight)
+  {
+    position.x += 1.0;
+  }
+  else
+  {
+    position.x -= 1.0;
+  }
+  sf::Vector2f velocity(PLAYER_BULLET_VELOCITY, 0.0);
+
+  if(!facingRight)
+  {
+    velocity.x *= -1;
+  }
+
+  sf::Vector2f hitbox(PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT);
+  GameObject* object = gof.createBullet(position, velocity, hitbox);
+  gameObjects.push_back(*object);
+
+  return gameObjects;
+}
+
+
 bool PlayerDataComponent::isIdle()
 {
   return !(walkingRight || walkingLeft || floatingRight || floatingLeft);
 }
 
-bool PlayerDataComponent::usingAbility()
+bool PlayerDataComponent::anyAbilitiesActivated()
 {
-  return (usingAb1 || usingAb2 || usingAb3 || usingAb4);
+  return (ab1Activated || ab2Activated || ab3Activated || ab4Activated);
+}
+
+bool PlayerDataComponent::anyAbilitiesInProgress()
+{
+  // return (ab1IP || ab2IP || ab3IP || ab4IP);
+  return abilityIP;
 }
 
 void PlayerDataComponent::setWalkingRight()
 {
   clearLeftRight();
   walkingRight = true;
+  facingRight = true;
 }
 
 void PlayerDataComponent::setWalkingLeft()
 {
   clearLeftRight();
   walkingLeft = true;
+  facingRight = false;
 }
 
 void PlayerDataComponent::setFloatingRight()
 {
   clearLeftRight();
   floatingRight = true;
+  facingRight = true;
 }
 
 void PlayerDataComponent::setFloatingLeft()
 {
   clearLeftRight();
   floatingLeft = true;
+  facingRight = false;
 }
 
 void PlayerDataComponent::clearLeftRight()
@@ -51,7 +95,15 @@ void PlayerDataComponent::clearLeftRight()
   floatingRight = false;
 }
 
-void PlayerPhysicsComponent::update(GameObject& object, World& world)
+void PlayerDataComponent::clearAbilityActivatedFlags()
+{
+  ab1Activated = false;
+  ab2Activated = false;
+  ab3Activated = false;
+  ab4Activated = false;
+}
+
+void PlayerPhysicsComponent::update(World& world)
 {
   if(m_data->walkingRight)
   {
@@ -95,7 +147,10 @@ void PlayerPhysicsComponent::update(GameObject& object, World& world)
     }
   }
 
-  // std::vector<GameObject> objectsToAdd;
+  if(m_data->ab1Activated && !m_data->abilityIP)
+  {
+    world.addEntities(m_data->bullet(world));
+  }
 
   if(m_data->jumping && m_data->m_isOnGround)
   {
@@ -105,7 +160,7 @@ void PlayerPhysicsComponent::update(GameObject& object, World& world)
 
   if(m_data->m_hp <= 0)
   {
-    object.m_toBeRemoved = true;
+    m_data->m_toBeRemoved = true;
   }
 
   // Set player's velocity due to acceleration from gravity
@@ -191,27 +246,35 @@ void PlayerInputComponent::update()
       m_data->jumping = true;
     }
   }
+  else
+  {
+    m_data->jumping = false;
+  }
 
 
-  // Set these to false conditionally when abilities are working
-  if(!m_data->usingAbility())
+  // Set these to false conditionally
+  if(!m_data->anyAbilitiesInProgress() && !m_data->anyAbilitiesActivated())
   {
     if(sf::Keyboard::isKeyPressed(key_ab1))
     {
-      m_data->usingAb1 = true;
+      m_data->ab1Activated = true;
     }
     else if(sf::Keyboard::isKeyPressed(key_ab2))
     {
-      m_data->usingAb2 = true;
+      m_data->ab2Activated = true;
     }
     else if(sf::Keyboard::isKeyPressed(key_ab3))
     {
-      m_data->usingAb3 = true;
+      m_data->ab3Activated = true;
     }
     else if(sf::Keyboard::isKeyPressed(key_ab4))
     {
-      m_data->usingAb4 = true;
+      m_data->ab4Activated = true;
     }
+  }
+  else
+  {
+    m_data->clearAbilityActivatedFlags();
   }
   
 	return;

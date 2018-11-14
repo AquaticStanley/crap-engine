@@ -6,5 +6,5 @@ class World;
 class PhysicsComponent
 {
 public:
-	virtual void update(GameObject& object, World& world) = 0;
+	virtual void update(World& world) = 0;
 };

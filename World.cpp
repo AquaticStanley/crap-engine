@@ -20,7 +20,7 @@ void World::updatePhysics()
   // Remove dead entities
   for(unsigned int i = 0; i < entities.size(); i++)
   {
-    if(entities.at(i).m_toBeRemoved)
+    if(entities.at(i).m_data->m_toBeRemoved)
     {
       entities.erase(entities.begin() + i);
       i--;
@@ -120,6 +120,40 @@ void World::resolveCollision(DataComponent* data)
 
   return;
 }
+
+void World::resolveBulletCollision(DataComponent* data)
+{
+  sf::Vector2f previousPosition = data->m_position - data->m_velocity;
+  data->m_isOnGround = false;
+
+  // Check if space is occupied
+  for(unsigned int i = 0; i < entities.size(); i++)
+  {
+    // Make sure entity being examined is not entity being passed in
+    if(entities[i].m_data->m_id != data->m_id)
+    {
+      // Check if any part of the hitbox passed through any part of the foreign object
+      // Make a rectangle containing the path of the bullet
+      sf::Vector2f bulletPathArea(std::abs(data->m_position.x - previousPosition.x), data->m_hitbox.y);
+
+      bool sameXLevel = valueInRange(entities[i].m_data->m_position.x, data->m_position.x, data->m_position.x + data->m_hitbox.x + 1) ||
+        valueInRange(data->m_position.x, entities[i].m_data->m_position.x, entities[i].m_data->m_position.x + entities[i].m_data->m_hitbox.x + 1);
+
+      bool sameYLevel = valueInRange(entities[i].m_data->m_position.y, data->m_position.y, data->m_position.y + data->m_hitbox.y + 1) ||
+        valueInRange(data->m_position.y, entities[i].m_data->m_position.y, entities[i].m_data->m_position.y + entities[i].m_data->m_hitbox.y + 1);
+      
+      if(sameXLevel && sameYLevel)
+      {
+        // Collision detected
+        if(entities[i].m_data->m_type == EntityType::Platform)
+        {
+          data->m_toBeRemoved = true;
+        }
+      }
+    }
+  }
+}
+
 
 World::World()
 {

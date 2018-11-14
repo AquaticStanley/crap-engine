@@ -8,7 +8,7 @@ class DataComponent
 {
 public:
   DataComponent(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f hitbox, EntityType::Type type, bool isOnGround) : 
-  m_position(position), m_velocity(velocity), m_hitbox(hitbox), m_type(type), m_isOnGround(isOnGround)
+  m_position(position), m_velocity(velocity), m_hitbox(hitbox), m_type(type), m_isOnGround(isOnGround), m_toBeRemoved(false)
   {
     m_id = getNewID();
   }
@@ -18,5 +18,6 @@ public:
   sf::Vector2f m_hitbox;
   EntityType::Type m_type;
   bool m_isOnGround;
+  bool m_toBeRemoved;
   unsigned int m_id;
 };

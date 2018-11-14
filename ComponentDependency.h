@@ -11,3 +11,4 @@
 #include "EntityTypes.h"
 #include "SpriteSheet.h"
 #include <iostream>
+#include "GameObjectFactory.h"

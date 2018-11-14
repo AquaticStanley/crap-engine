@@ -7,7 +7,7 @@ void GameObject::updateInput()
 
 void GameObject::updatePhysics(World& world)
 {
-  m_physics->update(*this, world);
+  m_physics->update(world);
 }
 
 void GameObject::updateGraphics(World& world, Graphics& graphics, double frameProgress)
