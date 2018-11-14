@@ -28,9 +28,14 @@ void GameLoop()
 	Graphics* graphics = new Graphics(windowPtr);
 
 	// Create test level
-	std::vector<GameObject> gameObjects;
+	// std::vector<GameObject> gameObjects = getTestLevel();
 	
-  World world(gameObjects);
+  World world;
+
+  // Spawn timer
+  bool spawned = false;
+  Stopwatch<std::chrono::milliseconds> spawnClock;
+  spawnClock.start();
 
   // First time render
 
@@ -50,14 +55,29 @@ void GameLoop()
       }
     }
 
+    // Check if it's time to spawn initial objects
+    if(!spawned && spawnClock.elapsed() >= 1000)
+    {
+      spawned = true;
+      std::vector<GameObject> gameObjects = getTestLevel();
+      world.addEntities(gameObjects);
+    }
+
     // Track framerate
     if(framerateClock.elapsed() >= 1000)
     {
+      std::cout << "Entities: " << world.entities.size() << std::endl;
       std::cout << "FPS: " << frameCount << std::endl;
+      std::cout << "VPS: " << vpsCount << std::endl << std::endl;
+
       framerateClock.restart();
       frameCount = 0;
-      std::cout << "VPS: " << vpsCount << std::endl;
       vpsCount = 0;
+      // std::cout << world.entities.size() << std::endl;
+      if(world.entities.size() > 0)
+      {
+        std::cout << "(" << world.entities[0].m_data->m_position.x << ", " << world.entities[0].m_data->m_position.y << ")\n";
+      }
     }
     frameCount++;
 
@@ -88,6 +108,7 @@ void GameLoop()
     {
 
       world.updatePhysics();
+      vpsCount++;
       // shape.setPosition(position);
       // if(increaseXAndY)
       // {
@@ -97,7 +118,6 @@ void GameLoop()
       // {
       //   shape.move(-1.f, -1.f);
       // }
-      vpsCount++;
       // shape.move(velocity, velocity);
 
       lag -= MS_PER_UPDATE;
@@ -111,5 +131,18 @@ void GameLoop()
     window.display();
   }
 
-    return;
+  return;
+}
+
+std::vector<GameObject> getTestLevel()
+{
+  std::vector<GameObject> gameObjects;
+  GameObjectFactory gameObjectFactory;
+
+  // Create Player
+  sf::Vector2f startingPos1 = sf::Vector2f(300, 600);
+  GameObject* object = gameObjectFactory.createPlayer(startingPos1);
+  
+  gameObjects.push_back(*object);
+  return gameObjects;
 }

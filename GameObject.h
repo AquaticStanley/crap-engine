@@ -16,9 +16,9 @@ private:
 	InputComponent* m_input;
 	PhysicsComponent* m_physics;
 	GraphicsComponent* m_graphics;
-  DataComponent* m_data;
 
 public:
+  DataComponent* m_data;
 	bool m_toBeRemoved;
 
 	GameObject(InputComponent* input,

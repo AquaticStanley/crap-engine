@@ -5,5 +5,8 @@
 #include "Stopwatch.h"
 #include "Graphics.h"
 #include "World.h"
+#include "GameObjectFactory.h"
 
 void GameLoop();
+
+std::vector<GameObject> getTestLevel();

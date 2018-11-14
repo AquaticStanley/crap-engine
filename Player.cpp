@@ -11,7 +11,7 @@ std::string PlayerSpriteSheet::operator[](std::string spriteName)
 
 bool PlayerDataComponent::isIdle()
 {
-  return (walkingRight || walkingLeft || floatingRight || floatingLeft);
+  return !(walkingRight || walkingLeft || floatingRight || floatingLeft);
 }
 
 bool PlayerDataComponent::usingAbility()
@@ -73,7 +73,7 @@ void PlayerPhysicsComponent::update(GameObject& object, World& world)
   {
     if(m_data->m_velocity.x > 0)
     {
-      if(m_data->isOnGround)
+      if(m_data->m_isOnGround)
       {
         m_data->m_velocity.x = std::max(m_data->m_velocity.x - IDLE_X_ACCELERATION_GROUND, 0.0);
       }
@@ -84,7 +84,7 @@ void PlayerPhysicsComponent::update(GameObject& object, World& world)
     }
     else
     {
-      if(m_data->isOnGround)
+      if(m_data->m_isOnGround)
       {
         m_data->m_velocity.x = std::min(m_data->m_velocity.x + IDLE_X_ACCELERATION_GROUND, 0.0);
       }
@@ -95,11 +95,59 @@ void PlayerPhysicsComponent::update(GameObject& object, World& world)
     }
   }
 
-  if(m_data->jumping && m_data->isOnGround)
+  // std::vector<GameObject> objectsToAdd;
+
+  if(m_data->jumping && m_data->m_isOnGround)
   {
     m_data->m_velocity.y += JUMP_VELOCITY;
-    m_data->isOnGround = false;
+    m_data->m_isOnGround = false;
   }
+
+  if(m_data->m_hp <= 0)
+  {
+    object.m_toBeRemoved = true;
+  }
+
+  // Set player's velocity due to acceleration from gravity
+  if(m_data->m_isOnGround)
+  {
+    m_data->m_velocity.y = 0;
+  }
+  else
+  {
+    m_data->m_velocity.y += WORLD_GRAVITY_ACCELERATION;
+  }
+
+  // Cap x and y movement speeds
+  if(std::abs(m_data->m_velocity.x) >= WORLD_X_SPEED_LIMIT)
+  {
+    if(m_data->m_velocity.x < 0)
+    {
+      m_data->m_velocity.x = WORLD_X_SPEED_LIMIT * -1;
+    }
+    else
+    {
+      m_data->m_velocity.x = WORLD_X_SPEED_LIMIT;
+    }
+  }
+
+  if(std::abs(m_data->m_velocity.y) >= WORLD_Y_SPEED_LIMIT)
+  {
+    if(m_data->m_velocity.y < 0)
+    {
+      m_data->m_velocity.y = WORLD_Y_SPEED_LIMIT * -1;
+    }
+    else
+    {
+      m_data->m_velocity.y = WORLD_Y_SPEED_LIMIT;
+    }
+  }
+
+  // Set player's position due to velocity
+  m_data->m_position += m_data->m_velocity;
+
+  // Resolve world collisions
+  world.resolveCollision(m_data);
 
 	return;
 }
@@ -111,7 +159,7 @@ void PlayerInputComponent::update()
 
   if(sf::Keyboard::isKeyPressed(key_right))
   {
-    if(m_data->isOnGround)
+    if(m_data->m_isOnGround)
     {
       m_data->setWalkingRight();
     }
@@ -122,7 +170,7 @@ void PlayerInputComponent::update()
   }
   else if(sf::Keyboard::isKeyPressed(key_left))
   {
-    if(m_data->isOnGround)
+    if(m_data->m_isOnGround)
     {
       m_data->setWalkingLeft();
     }
@@ -138,12 +186,14 @@ void PlayerInputComponent::update()
 
   if(sf::Keyboard::isKeyPressed(key_space))
   {
-    if(m_data->isOnGround)
+    if(m_data->m_isOnGround)
     {
       m_data->jumping = true;
     }
   }
 
+
+  // Set these to false conditionally when abilities are working
   if(!m_data->usingAbility())
   {
     if(sf::Keyboard::isKeyPressed(key_ab1))
@@ -167,8 +217,14 @@ void PlayerInputComponent::update()
 	return;
 }
 
-void PlayerGraphicsComponent::update(GameObject& object, Graphics& graphics, double frameProgress)
+void PlayerGraphicsComponent::update(Graphics& graphics, double frameProgress)
 {
-	return;
+  // sf::Vector2f predictedPosition = object.position_ + sf::Vector2f(object.velocity_.x * frameProgress, object.velocity_.y * frameProgress);
+
+  sf::Vector2f predictedPosition = m_data->m_position + sf::Vector2f(m_data->m_velocity.x * frameProgress, m_data->m_velocity.y * frameProgress);
+	
+  graphics.draw(predictedPosition, m_data->m_hitbox, STANDING_SPRITE);
+
+  return;
 }
 

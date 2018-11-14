@@ -2,6 +2,8 @@
 
 #include "ComponentDependency.h"
 #include <algorithm>
+#include <vector>
+#include <cmath>
 
 class PlayerSpriteSheet : public SpriteSheet
 {
@@ -20,7 +22,6 @@ class PlayerDataComponent : public DataComponent
 {
 public:
   int m_hp;
-  bool isOnGround;
 
   // Flags for what buttons are held
   bool walkingRight;
@@ -49,7 +50,7 @@ public:
 
   void clearLeftRight();
 
-  PlayerDataComponent(sf::Vector2f position, sf::Vector2f hitbox, EntityType::Type type) : DataComponent(position, sf::Vector2f(0.0, 0.0), hitbox, type), m_hp(100), isOnGround(false) {}
+  PlayerDataComponent(sf::Vector2f position, sf::Vector2f hitbox, EntityType::Type type, bool isOnGround) : DataComponent(position, sf::Vector2f(0.0, 0.0), hitbox, type, isOnGround), m_hp(100) {}
 };
 
 
@@ -63,7 +64,7 @@ private:
   PlayerDataComponent* m_data;
 
   // Player specific physics properties
-  const double WALK_ACCELERATION_GROUND = 0.5;
+  const double WALK_ACCELERATION_GROUND = 0.01;
   const double WALK_ACCELERATION_AIR = 0.25;
   const double IDLE_X_ACCELERATION_GROUND = 0.25;
   const double IDLE_X_ACCELERATION_AIR = 0.1;
@@ -125,13 +126,17 @@ private:
   PlayerDataComponent* m_data;
 
   // Player specific animations and sprites
-  PlayerSpriteSheet m_spriteSheet;
+  // PlayerSpriteSheet m_spriteSheet;
+  sf::Texture STANDING_TEXTURE;
+  sf::Sprite STANDING_SPRITE;
 
 public:
   PlayerGraphicsComponent(PlayerDataComponent* data) : m_data(data)
   {
-
+    bool loaded = STANDING_TEXTURE.loadFromFile("grillStandingSprite.png");
+    STANDING_SPRITE.setTexture(STANDING_TEXTURE);
+    STANDING_SPRITE.setTextureRect(sf::IntRect(0, 0, 15, 30));
   }
 
-  virtual void update(GameObject& object, Graphics& graphics, double frameProgress);
+  virtual void update(Graphics& graphics, double frameProgress);
 };

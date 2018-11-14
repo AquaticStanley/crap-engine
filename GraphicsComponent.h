@@ -8,5 +8,5 @@ class GraphicsComponent
 {
 public:
 	// virtual SpriteSheet* spritesheet;
-	virtual void update(GameObject& object, Graphics& graphics, double frameProgress) = 0;
+	virtual void update(Graphics& graphics, double frameProgress) = 0;
 };
