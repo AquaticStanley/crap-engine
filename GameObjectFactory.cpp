@@ -23,3 +23,9 @@ GameObject* GameObjectFactory::createPellet(sf::Vector2f position, sf::Vector2f 
   BulletDataComponent* data = new BulletDataComponent(position, velocity, hitbox);
   return new GameObject(new BulletInputComponent(), new BulletPhysicsComponent(data), new PelletGraphicsComponent(data), data);
 }
+
+GameObject* GameObjectFactory::createCamera(DataComponent* dataToFollow)
+{
+  CameraDataComponent* data = new CameraDataComponent(dataToFollow);
+  return new GameObject(new CameraInputComponent(), new CameraPhysicsComponent(data), new CameraGraphicsComponent(), data);
+}

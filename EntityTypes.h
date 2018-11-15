@@ -2,5 +2,5 @@
 
 struct EntityType
 {
-	enum Type{Player, Enemy, NPC, Object, Projectile, PlayerProjectile, Platform, Particle};
+	enum Type{Player, Enemy, NPC, Object, Projectile, PlayerProjectile, Platform, Particle, Camera};
 };

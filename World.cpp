@@ -171,6 +171,11 @@ bool World::canPassThrough(const EntityType::Type type1, const EntityType::Type 
     return true;
   }
 
+  if(type1 == EntityType::Camera || type2 == EntityType::Camera)
+  {
+    return true;
+  }
+
   return false;
 }
 

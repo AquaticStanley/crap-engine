@@ -65,7 +65,6 @@ std::vector<GameObject> PlayerDataComponent::shotgun(World& world)
 
 std::vector<GameObject> PlayerDataComponent::blink(World& world)
 {
-  std::cout << "Blink called" << std::endl;
   std::vector<GameObject> gameObjects;
 
   // Get ending position
@@ -289,8 +288,6 @@ void PlayerPhysicsComponent::update(World& world)
   // Set player's position due to velocity and other modifiers
   m_data->m_position += m_data->m_velocity;
 
-  // m_data->positionMod = sf::Vector2f(0.0, 0.0);
-
   // Resolve world collisions
   world.resolveCollision(m_data);
 
@@ -389,7 +386,6 @@ void PlayerGraphicsComponent::update(Graphics& graphics, double frameProgress)
   // sf::Vector2f predictedPosition = object.position_ + sf::Vector2f(object.velocity_.x * frameProgress, object.velocity_.y * frameProgress);
 
   sf::Vector2f predictedPosition = m_data->m_position + sf::Vector2f(m_data->m_velocity.x * frameProgress, m_data->m_velocity.y * frameProgress);
-   // + sf::Vector2f(m_data->positionMod.x, m_data->positionMod.y);
 	
   graphics.draw(predictedPosition, m_data->m_hitbox, STANDING_SPRITE);
 

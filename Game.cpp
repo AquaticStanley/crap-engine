@@ -41,7 +41,6 @@ void GameLoop()
   view.zoom(1 / zoomMultiplier);
   window.setView(view);
 
-
   // Main game loop
   while(window.isOpen())
   {
@@ -63,6 +62,7 @@ void GameLoop()
       world.addEntities(gameObjects);
     }
 
+
     // Track framerate
     if(framerateClock.elapsed() >= 1000)
     {
@@ -79,6 +79,11 @@ void GameLoop()
         std::cout << "(" << world.entities[0].m_data->m_position.x << ", " << world.entities[0].m_data->m_position.y << ")\n";
       }
     }
+    // if(spawned)
+    // {
+    //   std::cout << "(" << world.entities[0].m_data->m_position.x << ", " << world.entities[0].m_data->m_position.y << ")\n";
+    // }
+
     frameCount++;
 
     // Get delta time
@@ -88,20 +93,22 @@ void GameLoop()
 
     while(lag >= MS_PER_UPDATE)
     {
-
       world.updatePhysics();
+      
       vpsCount++;
 
       lag -= MS_PER_UPDATE;
     }
 
     window.clear(sf::Color::Black);
-    world.render((lag/MS_PER_UPDATE) + (1.0 - lagLeftOver), *graphics);
-    lagLeftOver = lag / MS_PER_UPDATE;
 
+
+    world.render((lag/MS_PER_UPDATE) + (1.0 - lagLeftOver), *graphics);
+    
+    lagLeftOver = lag / MS_PER_UPDATE;
     if(spawned)
     {
-      view.setCenter(sf::Vector2f(world.entities[0].m_data->m_position.x * 2.0, view.getSize().y * zoomMultiplier) - world.entities[0].m_data->m_position);
+      view.setCenter(sf::Vector2f(world.entities[1].m_data->m_position.x * 2.0, view.getSize().y * zoomMultiplier) - world.entities[1].m_data->m_position);
     }
     window.setView(view);
     window.display();
@@ -117,12 +124,16 @@ std::vector<GameObject> getTestLevel()
 
   // Create Player
   sf::Vector2f startingPos1 = sf::Vector2f(300, 600);
-  GameObject* object = gameObjectFactory.createPlayer(startingPos1);
-  gameObjects.push_back(*object);
+  GameObject* player = gameObjectFactory.createPlayer(startingPos1);
+
+  // Create Camera
+  GameObject* camera = gameObjectFactory.createCamera(player->m_data);
+  gameObjects.push_back(*player);
+  gameObjects.push_back(*camera);
 
   sf::Vector2f startingPos2 = sf::Vector2f(300, 500);
   sf::Vector2f hitBox1 = sf::Vector2f(100, 3);
-  object = gameObjectFactory.createPlatform(startingPos2, hitBox1);
+  GameObject* object = gameObjectFactory.createPlatform(startingPos2, hitBox1);
   gameObjects.push_back(*object);
 
   sf::Vector2f startingPos3 = sf::Vector2f(100, 200);
@@ -131,8 +142,8 @@ std::vector<GameObject> getTestLevel()
   gameObjects.push_back(*object);
 
   //Create floor
-  sf::Vector2f startingPosition4 = sf::Vector2f(100, 200);
-  sf::Vector2f hitBox3 = sf::Vector2f(500, 5);
+  sf::Vector2f startingPosition4 = sf::Vector2f(-100, 200);
+  sf::Vector2f hitBox3 = sf::Vector2f(700, 5);
   object = gameObjectFactory.createPlatform(startingPosition4, hitBox3);
 
   gameObjects.push_back(*object);

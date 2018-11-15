@@ -1,1 +1,3 @@
 condense same x level and same y level into function taking two gameobjects
+
+camera takes a datacomponent to store and follow
